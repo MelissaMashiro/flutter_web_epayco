@@ -1,0 +1,33 @@
+name: Flutter Web
+
+  on:
+    push:
+      branches:
+        - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: action/checkout@v2 #crea una copia del repositorio en un entorno virtual
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        channel: 'beta'
+    - name: Enable  Flutter web
+      run: flutter config --enable-web
+
+    - name: Install dependencies
+      run: flutter packages get
+    
+    - name: Build web
+      run: flutter build web #crea la app web de flutter  en la carpeta web de la carpeta build
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3 #nos permitirá publicar la appweb en github pages
+      with:
+        github_token: ${{ secrets.token}} #le da acceso al entorno para realizar modificaciones en el repositorio - el secreto token lo genero en mi github y lo asigno a mi repo
+        publish_dir: ./build/web
